@@ -174,7 +174,7 @@ export const getTasks = async (params: GetTasksParams = {}): Promise<any> => {
   try {
     const { search, status, sortBy = "Recent" } = params;
 
-    const response = await api.get("/tasks", {
+    const response = await api.get("/tasks/getAll", {
       params: {
         search,
         status,
@@ -224,7 +224,7 @@ export const updateTask = async (
   updateData: Partial<CreateTaskDto>
 ): Promise<Task> => {
   try {
-    const response = await api.put(`/tasks/${id}`, updateData);
+    const response = await api.put(`/tasks/update/${id}`, updateData);
     return handleResponse(response);
   } catch (error) {
     console.error(`Error updating task ${id}:`, error);
@@ -234,7 +234,7 @@ export const updateTask = async (
 
 export const deleteTask = async ({ id }: { id: string }): Promise<void> => {
   try {
-    const response = await api.delete(`/tasks/${id}`);
+    const response = await api.delete(`/tasks/delete/${id}`);
     handleResponse(response);
   } catch (error) {
     console.error(`Error deleting task ${id}:`, error);

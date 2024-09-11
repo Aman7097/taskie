@@ -10,7 +10,7 @@ const errorResponse = (res, statusCode, message) => {
 
 // Not Found middleware
 exports.notFound = (req, res, next) => {
-  errorResponse(res, 404, "Resource not found, Hello There");
+  errorResponse(res, 404, "Resource not found");
 };
 
 // Global error handling middleware

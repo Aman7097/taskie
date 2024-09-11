@@ -1,22 +1,51 @@
+/**
+ * Task Routes
+ *
+ * Defines API routes for task-related operations.
+ * All routes are protected by authentication middleware.
+ */
+
 const express = require("express");
 const router = express.Router();
 const { authCheck } = require("../middleware/authMiddleware");
 const taskController = require("../controllers/taskController");
 
-// Placeholder for your task controller
+// Apply authentication check to all routes
+router.use(authCheck);
 
-router.get("/", authCheck, taskController.getTasks);
+/**
+ * @route   GET /api/tasks
+ * @desc    Get all tasks for the authenticated user
+ * @access  Private
+ */
+router.get("/getAll", authCheck, taskController.getTasks);
 
-// Get a single task
+/**
+ * @route   GET /api/tasks/:id
+ * @desc    Get a single task by ID
+ * @access  Private
+ */
 router.get("/:id", authCheck, taskController.getTask);
 
-// Create a new task
+/**
+ * @route   POST /api/tasks
+ * @desc    Create a new task
+ * @access  Private
+ */
 router.post("/create", authCheck, taskController.createTask);
 
-// Update a task
-router.put("/:id", authCheck, taskController.updateTask);
+/**
+ * @route   PUT /api/tasks/:id
+ * @desc    Update an existing task
+ * @access  Private
+ */
+router.put("/update/:id", authCheck, taskController.updateTask);
 
-// Delete a task
-router.delete("/:id", authCheck, taskController.deleteTask);
+/**
+ * @route   DELETE /api/tasks/:id
+ * @desc    Delete a task
+ * @access  Private
+ */
+router.delete("/delete/:id", authCheck, taskController.deleteTask);
 
 module.exports = router;

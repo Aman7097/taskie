@@ -34,10 +34,6 @@ const taskSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    order: {
-      type: Number,
-      required: true,
-    },
   },
   {
     timestamps: true,
