@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userLogin } from "../api/axios";
-import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   email: z
@@ -19,7 +18,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Login = () => {
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
