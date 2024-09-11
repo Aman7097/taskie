@@ -62,6 +62,10 @@ const Signup = () => {
         console.log(tokenResponse, "tokenResponse");
         const response = await googleSignIn(tokenResponse.access_token);
         console.log(response, "Google sign-in response");
+        if (response.token) {
+          sessionStorage.setItem("id", response.user.id);
+          window.location.href = "/";
+        }
         // Handle successful Google sign-in (e.g., redirect to dashboard)
       } catch (error) {
         console.error("Error during Google sign-in:", error);

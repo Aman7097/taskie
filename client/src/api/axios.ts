@@ -149,9 +149,20 @@ export const userLogout = (): void => {
 export const googleSignIn = async (accessToken: string) => {
   try {
     const response = await api.post("/auth/google", {
-      token: accessToken,
+      accessToken,
     });
-    return response.data;
+    const data = response.data;
+
+    // Save token to localStorage
+    localStorage.setItem("token", data.token);
+
+    // Save user info to localStorage
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    // You might want to set up the authorization header for future requests here
+    api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
+    return data;
   } catch (error) {
     console.error("Error during Google sign-in:", error);
     throw error;

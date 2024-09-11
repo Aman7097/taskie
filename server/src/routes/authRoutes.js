@@ -2,6 +2,10 @@ const express = require("express");
 const { check } = require("express-validator");
 const authController = require("../controllers/authController.js");
 const passport = require("passport");
+const { OAuth2Client } = require("google-auth-library");
+const User = require("../models/UserModel.js");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -40,27 +44,93 @@ router.post(
 // @route   GET /api/auth/google
 // @desc    Google OAuth
 // @access  Public
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
 
-// Google OAuth callback route
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { session: false }),
-  (req, res) => {
-    // Create JWT token
+// router.post("/google", async (req, res) => {
+//   const { token } = req.body;
+//   try {
+//     const ticket = await client.verifyIdToken({
+//       idToken: token,
+//       audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+//     });
+//     const payload = ticket.getPayload();
+//     // Use payload.sub as Google's unique identifier for the user
+//     let user = await User.findOne({ googleId: payload.sub });
+//     if (!user) {
+//       user = new User({
+//         googleId: payload.sub,
+//         email: payload.email,
+//         firstName: payload.given_name,
+//         lastName: payload.family_name,
+//       });
+//       await user.save();
+//     }
+//     const jwtToken = jwt.sign(
+//       { id: user._id, email: user.email },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "1h" }
+//     );
+//     res.json({ token: jwtToken });
+//   } catch (error) {
+//     console.error("Error verifying Google token:", error);
+//     res.status(400).json({ message: "Invalid token" });
+//   }
+// });
+
+router.post("/google", async (req, res) => {
+  const { accessToken } = req.body;
+
+  console.log(req.body, "req.body");
+  try {
+    // Fetch user info using the access token
+    const userInfoResponse = await fetch(
+      `https://www.googleapis.com/oauth2/v3/userinfo`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!userInfoResponse.ok) {
+      throw new Error("Failed to fetch user info");
+    }
+
+    const userData = await userInfoResponse.json();
+    console.log(userData, "userData");
+
+    // Check if user exists, if not create a new user
+    let user = await User.findOne({ googleId: userData.sub });
+    if (!user) {
+      user = new User({
+        googleId: userData.sub,
+        email: userData.email,
+        firstName: userData.given_name,
+        lastName: userData.family_name || " ",
+      });
+      await user.save();
+    }
+
+    // Create and send JWT
     const token = jwt.sign(
-      { userId: req.user._id, email: req.user.email },
+      { id: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // Redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}/auth-success?token=${token}`);
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Google authentication error:", error);
+    res.status(401).json({ message: "Authentication failed" });
   }
-);
+});
 
 // @route   GET /api/auth/me
 // @desc    Get current user
