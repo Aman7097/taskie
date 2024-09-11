@@ -3,7 +3,7 @@ import Button from "../components/button";
 import { useMemo } from "react";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const id = useMemo(() => sessionStorage.getItem("userId"), []);
+  const id = useMemo(() => sessionStorage.getItem("id"), []);
   return (
     <div className="w-full h-full">
       <div className="flex items-center justify-between w-full h-20 px-4 py-4 bg-primary">

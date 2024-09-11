@@ -106,7 +106,7 @@ const Signup = () => {
             error={errors.confirmPassword && errors.confirmPassword.message}
           />
           <Button variant="primary" className="justify-center w-full">
-            Login
+            Signup
           </Button>
         </form>
         <div className="flex flex-col items-center space-y-3">
@@ -117,7 +117,7 @@ const Signup = () => {
             </a>
           </p>
           <Button variant="primary" onClick={() => googleLogin()}>
-            Signup with <span className="font-semibold">Google</span>
+            Login with <span className="font-semibold">Google</span>
           </Button>
         </div>
       </div>
