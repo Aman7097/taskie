@@ -34,13 +34,16 @@ const Login = () => {
       console.log(data);
       const response = await userLogin(data);
       console.log(response, "response");
+      if (response.message === "Invalid credentials") {
+        toast.error("Invalid credentials", { toastId: "alert" });
+      }
       if (response.token) {
         toast.info("Login successful", { toastId: "alert" });
         sessionStorage.setItem("id", response.user.id);
         window.location.href = "/";
       }
     } catch (error) {
-      console.error(error);
+      console.error(error, "Error");
     }
   };
 

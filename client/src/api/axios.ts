@@ -86,6 +86,9 @@ const handleResponse = <T>(response: AxiosResponse<T>): T => {
   if (response.status >= 200 && response.status < 300) {
     return response.data;
   }
+  if (response.status === 400) {
+    return response.data;
+  }
   throw new Error(`API error: ${response.status} ${response.statusText}`);
 };
 
@@ -93,7 +96,7 @@ const handleResponse = <T>(response: AxiosResponse<T>): T => {
 export const userLogin = async ({
   email,
   password,
-}: LoginData): Promise<{ token: string; user: any }> => {
+}: LoginData): Promise<{ token: string; user: any; message?: string }> => {
   try {
     const response = await api.post("/auth/login", { email, password });
     const data = response.data;
@@ -120,7 +123,7 @@ export const userRegister = async ({
   email,
   password,
   confirmPassword,
-}: RegisterData): Promise<{ token: string; user: any }> => {
+}: RegisterData): Promise<{ token: string; user: any; message?: string }> => {
   try {
     // Check if password and confirmPassword match
     if (password !== confirmPassword) {
@@ -135,7 +138,12 @@ export const userRegister = async ({
     });
     return handleResponse(response);
   } catch (error) {
-    console.error("Error during registration:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 401) {
+        throw new Error("Invalid credentials");
+      }
+    }
+    console.error("Error during login:", error);
     throw error;
   }
 };
