@@ -17,9 +17,9 @@ const router = createBrowserRouter(
       <Route
         index
         element={
-          // <PrivateRoute>
-          <TodoList />
-          // </PrivateRoute>
+          <PrivateRoute>
+            <TodoList />
+          </PrivateRoute>
         }
       />
     </Route>

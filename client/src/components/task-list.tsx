@@ -2,7 +2,6 @@ import React from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import { Draggable } from "@hello-pangea/dnd";
 import Button from "./button";
-import { Task } from "../types/types";
 
 interface TaskListProps {
   status: string;

@@ -6,12 +6,13 @@ interface OptionType {
 interface CustomSelectProps {
   options: OptionType[];
   placeholder?: string;
-  onChange: (selectedOption: OptionType | null) => void;
+  onChange: any;
   controlClasses?: string;
   value?: OptionType | null;
+  className?: any;
 }
 
-export interface Task {
+interface Task {
   _id: string;
   title: string;
   description: string;

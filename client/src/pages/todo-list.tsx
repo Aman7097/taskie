@@ -10,7 +10,6 @@ import { TaskFormData, taskSchema } from "../utils/schemas";
 import useTodoList from "../hooks/useTodoList";
 import { createTask, deleteTask, updateTask } from "../api/axios";
 import TaskList from "../components/task-list";
-import { Task } from "../types/types";
 
 const TodoList: React.FC = () => {
   const {
@@ -291,8 +290,8 @@ const TodoList: React.FC = () => {
                   if (val) setValue("status", val.value);
                 }}
                 value={{
-                  label: selectedTask?.status,
-                  value: selectedTask?.status,
+                  label: selectedTask?.status || "",
+                  value: selectedTask?.status || "",
                 }}
                 controlClasses="w-full"
               />
