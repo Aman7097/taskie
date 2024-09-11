@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.css-1u9des2-indicatorSeparator {
+  display: none;
+}
