@@ -1,9 +1,35 @@
 import { FaCalendar } from "react-icons/fa";
 import Button from "../components/button";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const id = useMemo(() => sessionStorage.getItem("id"), []);
+  const [id, setId] = useState("");
+
+  useEffect(() => {
+    const checkSessionStorage = () => {
+      const storedId = sessionStorage.getItem("id");
+      setId(storedId || "");
+    };
+
+    // Check on mount
+    checkSessionStorage();
+
+    // Set up event listener for storage changes
+    window.addEventListener("storage", checkSessionStorage);
+
+    // Clean up
+    return () => {
+      window.removeEventListener("storage", checkSessionStorage);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("id");
+    setId("");
+    // Redirect to login page or home page
+    window.location.href = "/login";
+  };
+
   return (
     <div className="w-full h-full">
       <div className="flex items-center justify-between w-full h-20 px-4 py-4 bg-primary">
@@ -25,7 +51,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </a>
           </div>
         ) : (
-          <Button variant="danger" className="px-4 text-base">
+          <Button
+            variant="danger"
+            className="px-4 text-base"
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         )}

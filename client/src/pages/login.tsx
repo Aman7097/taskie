@@ -35,7 +35,7 @@ const Login = () => {
       console.log(response, "response");
       if (response.token) {
         sessionStorage.setItem("id", response.user.id);
-        navigate("/");
+        window.location.href = "/";
       }
     } catch (error) {
       console.error(error);
