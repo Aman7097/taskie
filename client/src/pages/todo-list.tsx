@@ -10,6 +10,7 @@ import { TaskFormData, taskSchema } from "../utils/schemas";
 import useTodoList from "../hooks/useTodoList";
 import { createTask, deleteTask, updateTask } from "../api/axios";
 import TaskList from "../components/task-list";
+import { toast } from "react-toastify";
 
 const TodoList: React.FC = () => {
   const {
@@ -43,20 +44,12 @@ const TodoList: React.FC = () => {
       setShowAddTask(false);
       reset();
       refetchTasks();
+      toast.success("Task Added", { toastId: "alert" });
     } catch (error) {
+      toast.error("Something went wrong", { toastId: "error" });
       console.error(error);
     }
   };
-
-  // const onEditTask = async (data: TaskFormData) => {
-  //   try {
-  //     console.log(data);
-  //     setShowEditTask(false);
-  //     refetchTasks();
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const onEditTask = (task: Task) => {
     setSelectedTask(task);
@@ -74,20 +67,22 @@ const TodoList: React.FC = () => {
       setShowEditTask(false);
       reset();
       refetchTasks();
+      toast.success("Task Edited", { toastId: "alert" });
     } catch (error) {
+      toast.error("Something went wrong", { toastId: "error" });
       console.error(error);
     }
   };
 
   const onDeleteTask = async (taskId: string) => {
-    // if (window.confirm("Are you sure you want to delete this task?")) {
     try {
       await deleteTask({ id: taskId });
       refetchTasks();
+      toast.info("Task Deleted", { toastId: "alert" });
     } catch (error) {
+      toast.error("Something went wrong", { toastId: "error" });
       console.error(error);
     }
-    // }
   };
 
   const onViewTaskDetails = (task: Task) => {

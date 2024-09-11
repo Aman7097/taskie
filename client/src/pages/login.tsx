@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userLogin } from "../api/axios";
+import { googleSignIn } from "../api/axios";
+import { useGoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   email: z
@@ -32,6 +35,7 @@ const Login = () => {
       const response = await userLogin(data);
       console.log(response, "response");
       if (response.token) {
+        toast.info("Login successful", { toastId: "alert" });
         sessionStorage.setItem("id", response.user.id);
         window.location.href = "/";
       }
@@ -39,6 +43,31 @@ const Login = () => {
       console.error(error);
     }
   };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const response = await googleSignIn(tokenResponse.access_token);
+
+        if (response.token) {
+          toast.info("Login successful", { toastId: "alert" });
+          sessionStorage.setItem("id", response.user.id);
+          window.location.href = "/";
+        }
+        // Handle successful Google sign-in (e.g., redirect to dashboard)
+      } catch (error) {
+        toast.error("Something went wrong", { toastId: "error" });
+        console.error("Error during Google sign-in:", error);
+        // Handle Google sign-in error (e.g., show error message to user)
+      }
+    },
+    onError: (errorResponse) => {
+      toast.error("Something went wrong", { toastId: "error" });
+      console.error("Google Sign-In Error:", errorResponse);
+
+      // Handle Google sign-in error (e.g., show error message to user)
+    },
+  });
 
   return (
     <div className="container max-w-[520px] mx-auto my-10 px-2">
@@ -72,7 +101,7 @@ const Login = () => {
               <span className="text-primary">Signup here</span>
             </a>
           </p>
-          <Button variant="primary">
+          <Button variant="primary" onClick={() => googleLogin()}>
             Login with <span className="font-semibold">Google</span>
           </Button>
         </div>
