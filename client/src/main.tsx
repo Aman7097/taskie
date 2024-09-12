@@ -6,9 +6,9 @@ import router from "./router/router.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <GoogleOAuthProvider clientId="489195454771-8k3ddoduoaakqlv47nqq21q971t2s02i.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId="489195454771-8k3ddoduoaakqlv47nqq21q971t2s02i.apps.googleusercontent.com">
+    <StrictMode>
       <RouterProvider router={router} />
-    </GoogleOAuthProvider>
-  </StrictMode>
+    </StrictMode>
+  </GoogleOAuthProvider>
 );
